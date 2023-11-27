@@ -1,5 +1,3 @@
-# aoc_23
-
 ![](https://raw.githubusercontent.com/orfeasa/advent-of-code-2023/master/header.png)
 
 ![](https://img.shields.io/badge/day%20📅-0-blue)
