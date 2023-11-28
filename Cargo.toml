@@ -4,6 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+chrono = "0.4.31"
 colored = "2.0.4"
 itertools = "0.12.0"
+log = { version = "0.4.20", features = ["std"] }
 macros = { path = "./macros" }

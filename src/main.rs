@@ -9,10 +9,20 @@ use colored::Colorize;
 
 mod days;
 mod display;
+mod logging;
 
 use days::Day;
+use logging::log;
+
+mod prelude {
+    pub use crate::{
+        days::Day,
+        logging::*
+    };
+}
 
 fn main() {
+    logging::ChristmasLogger::init();
     set_panic_handler();
     let day_num = parse_input_day_num();
 
@@ -62,8 +72,7 @@ fn parse_input_day_num() -> usize {
 fn get_input(day_num: usize) -> String {
     let cwd = env::current_dir().unwrap();
     let filename = cwd.join("inputs").join(format!("day{:02}.txt", day_num));
-    println!("Reading {}", filename.display());
-    println!("");
+    log!("Reading {}\n", filename.display());
     fs::read_to_string(filename).expect("Error while reading")
 }
 

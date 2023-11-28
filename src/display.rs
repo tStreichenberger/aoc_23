@@ -27,20 +27,20 @@ pub fn santa_hat() -> impl Display {
         .red()
         .to_string();
     hat.push('\n');
-    hat.push_str(" ******".white().to_string().as_str());
+    hat.push_str(" ******".bright_white().to_string().as_str());
     hat.push_str(" %&     &&&&&&%%%%#((((((((#,".red().to_string().as_str());
     hat.push('\n');
-    hat.push_str(" ********".white().to_string().as_str());
+    hat.push_str(" ********".bright_white().to_string().as_str());
     hat.push_str("     (&%%%%%&&&&%%%%%##(((#(".red().to_string().as_str());
     hat.push('\n');
-    hat.push_str("  *****".white().to_string().as_str());
+    hat.push_str("  *****".bright_white().to_string().as_str());
     hat.push_str("       &%%%%%%%%%%%%%%%%######*".red().to_string().as_str());
     hat.push('\n');
     hat.push_str(
         "           **************************** 
           ******************************
           ******************************"
-            .white()
+            .bright_white()
             .to_string()
             .as_str(),
     );
