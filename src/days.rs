@@ -12,10 +12,10 @@ pub trait Day {
     }
 }
 
-pub fn get_day(daynum: usize) -> Box<dyn Day> {
+pub fn get_day(daynum: usize) -> &'static dyn Day {
     match daynum {
-        1 => Box::new(day01::Day01),
-        4 => Box::new(Unimplemented),
+        1 => &day01::Day01,
+        4 => &Unimplemented,
         _ => panic!("No Solution found for day: {daynum}"),
     }
 }

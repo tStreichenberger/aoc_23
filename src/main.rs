@@ -1,6 +1,5 @@
 use std::{
     env,
-    fmt::Display,
     fs,
     io,
     time::Instant,
@@ -9,68 +8,81 @@ use std::{
 use colored::Colorize;
 
 mod days;
+mod display;
+
+use days::Day;
 
 fn main() {
-    // Get day string
+    set_panic_handler();
+    let day_num = parse_input_day_num();
+
+    let input = get_input(day_num);
+    let day = days::get_day(day_num);
+
+    println!("\n{}\n", display::santa_hat());
+
+    run_star(day, input.clone(), false);
+    run_star(day, input, true)
+}
+
+fn set_panic_handler() {
+    let default_hook = std::panic::take_hook();
+
+    std::panic::set_hook(Box::new(move |panic_info| {
+        println!("{}", display::oops_santa());
+        default_hook(panic_info)
+    }))
+}
+
+fn parse_input_day_num() -> usize {
     let args: Vec<String> = env::args().collect();
     let mut day = String::new();
 
     if args.len() >= 2 {
         day = args[1].clone();
     } else {
+        // prompt user if they didn't input
         println!("Enter day: ");
         io::stdin()
             .read_line(&mut day)
             .expect("Failed to read line");
     }
-
     // Parse day as number
     day = day.trim().to_string();
-    let day_num = match day.parse() {
+    match day.parse() {
         Ok(num) => num,
         Err(_) => {
             println!("Invalid day number: {}", day);
-            return;
+            std::process::exit(1);
         }
-    };
+    }
+}
 
-    // Read input file
+fn get_input(day_num: usize) -> String {
     let cwd = env::current_dir().unwrap();
     let filename = cwd.join("inputs").join(format!("day{:02}.txt", day_num));
     println!("Reading {}", filename.display());
-    let input = fs::read_to_string(filename).expect("Error while reading");
-
-    // Get corresponding function
-    let to_run = days::get_day(day_num);
-
-    // Time it
-
     println!("");
-    println!("{}", "Running Part 1".bright_yellow());
-    println!("{}", banner());
-    let part1_start = Instant::now();
-    let solution = to_run.star1(input.clone());
-    println!("{} {solution}", "Solution:".green());
-    let part1_dur = part1_start.elapsed();
-    println!("{}: {part1_dur:?}", "Took".green());
-
-    println!("");
-    println!("{}", "Running Part 2".bright_yellow());
-    println!("{}", banner());
-    let part2_start = Instant::now();
-    let solution = to_run.star2(input);
-    println!("{} {solution}", "Solution:".green());
-    let part2_dur = part2_start.elapsed();
-    println!("{}: {part2_dur:?}", "Took".green());
-    println!("")
+    fs::read_to_string(filename).expect("Error while reading")
 }
 
-fn banner() -> impl Display {
-    let mut x = "-".green().to_string();
-    for _ in 0..12 {
-        x.push_str("-".red().to_string().as_str());
-        x.push_str("-".green().to_string().as_str());
-    }
+fn run_star(day: &dyn Day, input: String, is_second_star: bool) {
+    let day_num = is_second_star as usize + 1;
 
-    x.to_string()
+    println!(
+        "{} {} {}",
+        "Running".green(),
+        "*".bright_yellow(),
+        day_num.to_string().green()
+    );
+    println!("{}", display::banner());
+    let start = Instant::now();
+    let solution = match is_second_star {
+        false => day.star1(input),
+        true => day.star2(input),
+    };
+    println!("{} {solution}", "Solution:".green());
+    let dur = start.elapsed();
+    println!("{}: {dur:?}", "Took".green());
+    println!("");
 }
