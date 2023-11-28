@@ -17,7 +17,8 @@ fn main() {
     let day_num = parse_input_day_num();
 
     let input = get_input(day_num);
-    let day = days::get_day(day_num);
+
+    let day = macros::get_day!(day_num);
 
     println!("\n{}\n", display::santa_hat());
 
