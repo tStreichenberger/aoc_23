@@ -21,25 +21,25 @@ fi
 DAY_MOD_PATH="src/days.rs"
 CURRENT_DAY_MOD_PATH="src/days/day${CURRENT_DAY}.rs"
 
-if [ -f $CURRENT_DAY_MOD_PATH ]; then
-    echo "$CURRENT_DAY_MOD_PATH already exists. Skipping generation"
-    exit 0
-fi
-
-
-# add mod to days.rs
-echo -e "pub mod day${CURRENT_DAY};\n$(cat $DAY_MOD_PATH)" > $DAY_MOD_PATH
+if [ ! -f $CURRENT_DAY_MOD_PATH ]; then
+    # add mod to days.rs
+    echo -e "pub mod day${CURRENT_DAY};\n$(cat $DAY_MOD_PATH)" > $DAY_MOD_PATH
 
 
 
-# create template .rs file
-cat <<EOT >> $CURRENT_DAY_MOD_PATH
+    # create template .rs file
+    cat <<EOT >> $CURRENT_DAY_MOD_PATH
 use crate::prelude::*;
 
 pub struct Day${CURRENT_DAY};
 impl Day for Day${CURRENT_DAY} {}
 
 EOT
+else
+    echo "$CURRENT_DAY_MOD_PATH already exists. Skipping generation"
+fi
 
 
-open "https://https://adventofcode.com/2023/day/${CURRENT_DAY#0}"
+
+
+open "https://adventofcode.com/2023/day/${CURRENT_DAY#0}"

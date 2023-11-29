@@ -1,7 +1,10 @@
 use colored::Colorize;
 use log::Log;
 
-use std::sync::atomic::{AtomicUsize, Ordering::Relaxed};
+use std::sync::atomic::{
+    AtomicUsize,
+    Ordering::Relaxed,
+};
 
 const EMOJI: [&str; 3] = ["🎄", "🎁", "⭐️"];
 
@@ -36,9 +39,7 @@ impl Log for ChristmasLogger {
 
         println!("{emoji} {time_stamp} {location} {args}")
     }
-    fn flush(&self) {
-        
-    }
+    fn flush(&self) {}
 }
 
 macro_rules! log {
@@ -49,15 +50,12 @@ macro_rules! log {
 pub(crate) use log;
 
 macro_rules! debug {
-    ($e:expr) => {
-        {
-            crate::logging::log!("{} = {:#?}", std::stringify!($e), $e);
-            $e
-        }
-    };
+    ($e:expr) => {{
+        crate::logging::log!("{} = {:#?}", std::stringify!($e), $e);
+        $e
+    }};
 }
 pub(crate) use debug;
-
 
 // returns current time as ISO string
 fn time_stamp() -> String {
