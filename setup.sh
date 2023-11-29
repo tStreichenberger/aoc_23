@@ -2,7 +2,7 @@
 # 1. download input
 # 2. create simple day rust file
 # 3. add mod to day.rs
-
+# 4. open website with question in browser
 
 
 CURRENT_DAY=$(date +%d)
@@ -40,3 +40,6 @@ pub struct Day${CURRENT_DAY};
 impl Day for Day${CURRENT_DAY} {}
 
 EOT
+
+
+open "https://https://adventofcode.com/2023/day/${CURRENT_DAY#0}"
