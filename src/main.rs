@@ -1,7 +1,10 @@
 use std::{
     env,
     fs,
-    io,
+    io::{
+        self,
+        Write,
+    },
     time::Instant,
 };
 
@@ -17,7 +20,7 @@ use logging::log;
 mod prelude {
     pub use crate::{
         days::Day,
-        logging::*
+        logging::*,
     };
 }
 
@@ -53,7 +56,8 @@ fn parse_input_day_num() -> usize {
         day = args[1].clone();
     } else {
         // prompt user if they didn't input
-        println!("Enter day: ");
+        print!("{}", "Enter day: ".green());
+        let _ = io::stdout().flush();
         io::stdin()
             .read_line(&mut day)
             .expect("Failed to read line");
