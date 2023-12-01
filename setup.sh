@@ -7,7 +7,7 @@
 # 4. open website with question in browser
 
 
-CURRENT_DAY=$(date +%d)
+CURRENT_DAY=$(TZ='America/New_York' date +%d)
 
 INPUT_FILE_PATH=inputs/day${CURRENT_DAY}.txt
 

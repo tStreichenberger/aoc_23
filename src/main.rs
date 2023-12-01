@@ -22,6 +22,12 @@ mod prelude {
         days::Day,
         logging::*,
     };
+    pub use itertools::Itertools;
+    pub use lazy_static::lazy_static;
+    pub use std::{
+        convert::Infallible,
+        str::FromStr,
+    };
 }
 
 fn main() {

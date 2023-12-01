@@ -49,12 +49,14 @@ macro_rules! log {
 }
 pub(crate) use log;
 
+#[allow(unused)]
 macro_rules! debug {
     ($e:expr) => {{
         crate::logging::log!("{} = {:#?}", std::stringify!($e), $e);
         $e
     }};
 }
+#[allow(unused)]
 pub(crate) use debug;
 
 // returns current time as ISO string
