@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # sets up a day
 # 1. download input
 # 2. create simple day rust file
@@ -24,8 +26,6 @@ CURRENT_DAY_MOD_PATH="src/days/day${CURRENT_DAY}.rs"
 if [ ! -f $CURRENT_DAY_MOD_PATH ]; then
     # add mod to days.rs
     echo -e "pub mod day${CURRENT_DAY};\n$(cat $DAY_MOD_PATH)" > $DAY_MOD_PATH
-
-
 
     # create template .rs file
     cat <<EOT >> $CURRENT_DAY_MOD_PATH
