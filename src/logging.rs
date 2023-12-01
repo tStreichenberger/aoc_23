@@ -6,7 +6,7 @@ use std::sync::atomic::{
     Ordering::Relaxed,
 };
 
-const EMOJI: [&str; 3] = ["🎄", "🎁", "⭐️"];
+const EMOJI: [&str; 10] = ["🎄", "🎁", "⭐️", "🦌", "⛄️", "🎄", "🎁", "⭐️", "🍪", "🥛"];
 
 static EMOJI_COUNTER: AtomicUsize = AtomicUsize::new(0);
 
