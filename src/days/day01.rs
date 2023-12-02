@@ -6,17 +6,17 @@ pub struct Day01;
 
 impl Day for Day01 {
     fn star1(&self, input: String) -> String {
-        let sum = input.lines().fold(0, |sum, line| {
-            sum + line.parse::<CalibrationValue>().unwrap().0
-        });
-        return sum.to_string();
+        input
+            .parsed_lines()
+            .sum_by(|val: CalibrationValue| val.0)
+            .to_string()
     }
 
     fn star2(&self, input: String) -> String {
-        let sum = input.lines().fold(0, |sum, line| {
-            sum + line.parse::<FancyCalibrationValue>().unwrap().0
-        });
-        return sum.to_string();
+        input
+            .parsed_lines()
+            .sum_by(|val: FancyCalibrationValue| val.0)
+            .to_string()
     }
 }
 
