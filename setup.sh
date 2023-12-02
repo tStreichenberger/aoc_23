@@ -6,8 +6,12 @@
 # 3. add mod to day.rs
 # 4. open website with question in browser
 
-
-CURRENT_DAY=$(TZ='America/New_York' date +%d)
+if [ -z "$1" ]; then
+    CURRENT_DAY=$(TZ='America/New_York' date +%d)
+else
+    # allow user input for day
+    CURRENT_DAY=$(printf "%02d" "$1")
+fi
 
 INPUT_FILE_PATH=inputs/day${CURRENT_DAY}.txt
 
@@ -15,6 +19,7 @@ INPUT_FILE_PATH=inputs/day${CURRENT_DAY}.txt
 if [ ! -f $INPUT_FILE_PATH ]; then
     # you can download this cli tool with `cargo install aoc-cli`
     aoc download --day $CURRENT_DAY --input-only --input-file ${INPUT_FILE_PATH}
+    if [ $? -ne 0 ]; then exit 1; fi
 else
     echo "Day ${CURRENT_DAY} already downlaoded. Skipping download"
 fi
