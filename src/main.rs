@@ -1,13 +1,10 @@
 use std::{
     env,
     fs,
-    io::{
-        self,
-        Write,
-    },
     time::Instant,
 };
 
+use clap::Parser;
 use colored::Colorize;
 
 mod days;
@@ -30,10 +27,23 @@ mod prelude {
     };
 }
 
+#[derive(Parser)]
+struct Args {
+    #[arg(short, long)]
+    stress_test: bool,
+    #[arg(short = 'l', long, default_value_t = 1000)]
+    test_len: u32,
+    day_num: usize,
+}
+
+lazy_static::lazy_static! {
+    static ref ARGS: Args = Args::parse();
+}
+
 fn main() {
     logging::ChristmasLogger::init();
     set_panic_handler();
-    let day_num = parse_input_day_num();
+    let day_num = ARGS.day_num;
 
     let input = get_input(day_num);
 
@@ -41,8 +51,16 @@ fn main() {
 
     println!("\n{}\n", display::santa_hat());
 
-    stress_test_star(day, input.clone(), false);
-    stress_test_star(day, input, true)
+    let to_run = match ARGS.stress_test {
+        false => run_star,
+        true => {
+            log!("Stress Testing over {} runs", ARGS.test_len);
+            stress_test_star
+        }
+    };
+
+    to_run(day, input.clone(), false);
+    to_run(day, input, true)
 }
 
 fn set_panic_handler() {
@@ -52,31 +70,6 @@ fn set_panic_handler() {
         println!("{}", display::oops_santa());
         default_hook(panic_info)
     }))
-}
-
-fn parse_input_day_num() -> usize {
-    let args: Vec<String> = env::args().collect();
-    let mut day = String::new();
-
-    if args.len() >= 2 {
-        day = args[1].clone();
-    } else {
-        // prompt user if they didn't input
-        print!("{}", "Enter day: ".green());
-        let _ = io::stdout().flush();
-        io::stdin()
-            .read_line(&mut day)
-            .expect("Failed to read line");
-    }
-    // Parse day as number
-    day = day.trim().to_string();
-    match day.parse() {
-        Ok(num) => num,
-        Err(_) => {
-            println!("Invalid day number: {}", day);
-            std::process::exit(1);
-        }
-    }
 }
 
 fn get_input(day_num: usize) -> String {
@@ -108,12 +101,12 @@ fn run_star(day: &dyn Day, input: String, is_second_star: bool) {
 }
 
 fn stress_test_star(day: &dyn Day, input: String, is_second_star: bool) {
+    let day_num = is_second_star as usize + 1;
     let mut total = std::time::Duration::ZERO;
-    const NUM: u32 = 1000;
-    for _ in 0..NUM {
+    for _ in 0..ARGS.test_len {
         total += time_star(day, input.clone(), is_second_star);
     }
-    log!("Ran star {} in {:?}", is_second_star as usize, total / NUM);
+    log!("Ran star {} in {:?}", day_num, total / ARGS.test_len);
 }
 
 fn time_star(day: &dyn Day, input: String, is_second_star: bool) -> std::time::Duration {
