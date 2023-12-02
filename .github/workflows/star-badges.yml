@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v2                # clones your repo
 
       # Set Timezone to New York
-      - uses: zcong1993/setup-timezone@v1
+      - uses: zcong1993/setup-timezone@master
         name: Set Timezone
         with:
           timezone: America/New_York
