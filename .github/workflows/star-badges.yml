@@ -13,6 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2                # clones your repo
+
+      # Set Timezone to New York
+      - uses: zcong1993/setup-timezone@v1
+        name: Set Timezone
+        with:
+          timezone: America/New_York
           
       - uses: joblo2213/aoc-badges-action@v3
         with:
