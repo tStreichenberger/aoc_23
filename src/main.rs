@@ -9,8 +9,8 @@ use colored::Colorize;
 
 mod days;
 mod display;
-mod logging;
 mod ext;
+mod logging;
 
 use days::Day;
 use logging::log;
@@ -18,8 +18,8 @@ use logging::log;
 mod prelude {
     pub use crate::{
         days::Day,
-        logging::*,
         ext::*,
+        logging::*,
     };
     pub use itertools::Itertools;
     pub use lazy_static::lazy_static;

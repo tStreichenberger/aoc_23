@@ -4,26 +4,22 @@ pub struct Day02;
 impl Day for Day02 {
     fn star1(&self, input: String) -> String {
         input
-            .lines()
-            .map(Game::from_str)
-            .filter_ok(|game| {
+            .parsed_lines()
+            .filter(|game: &Game| {
                 game.subsets.iter().all(|subset| {
                     subset.red <= RED_LIMIT
                         && subset.green <= GREEN_LIMIT
                         && subset.blue <= BLUE_LIMIT
                 })
             })
-            .fold_ok(0, |sum, game| sum + game.id)
-            .unwrap()
+            .sum_by(|game| game.id)
             .to_string()
     }
 
     fn star2(&self, input: String) -> String {
         input
-            .lines()
-            .map(Game::from_str)
-            .fold_ok(0, |sum, game| sum + game.power())
-            .unwrap()
+            .parsed_lines()
+            .sum_by(|game: Game| game.power())
             .to_string()
     }
 }
@@ -44,11 +40,7 @@ impl FromStr for Game {
 
         let id = game_header[5..].parse().unwrap();
 
-        let subsets = subsets
-            .split("; ")
-            .map(Subset::from_str)
-            .collect::<Result<_, _>>()
-            .unwrap();
+        let subsets = subsets.split("; ").parse().collect();
 
         Ok(Self { id, subsets })
     }
