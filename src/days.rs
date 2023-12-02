@@ -2,7 +2,7 @@ pub mod day01;
 
 pub const UNIMPLEMENTED_SOLUTION: &str = "Unimplemented";
 
-pub trait Day {
+pub trait Day: Sync {
     fn star1(&self, _input: String) -> String {
         UNIMPLEMENTED_SOLUTION.into()
     }

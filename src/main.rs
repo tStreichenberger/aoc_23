@@ -101,11 +101,20 @@ fn run_star(day: &dyn Day, input: String, is_second_star: bool) {
 }
 
 fn stress_test_star(day: &dyn Day, input: String, is_second_star: bool) {
+    use rayon::prelude::*;
     let day_num = is_second_star as usize + 1;
-    let mut total = std::time::Duration::ZERO;
-    for _ in 0..ARGS.test_len {
-        total += time_star(day, input.clone(), is_second_star);
-    }
+    let total = (0..ARGS.test_len)
+        .into_par_iter()
+        .fold(
+            || std::time::Duration::ZERO,
+            |total, _| total + time_star(day, input.clone(), is_second_star),
+        )
+        .reduce(
+            || std::time::Duration::ZERO,
+            |total, thread_tot| total + thread_tot,
+        );
+    // {
+    // }
     log!("Ran star {} in {:?}", day_num, total / ARGS.test_len);
 }
 
