@@ -41,8 +41,8 @@ fn main() {
 
     println!("\n{}\n", display::santa_hat());
 
-    run_star(day, input.clone(), false);
-    run_star(day, input, true)
+    stress_test_star(day, input.clone(), false);
+    stress_test_star(day, input, true)
 }
 
 fn set_panic_handler() {
@@ -105,4 +105,22 @@ fn run_star(day: &dyn Day, input: String, is_second_star: bool) {
     let dur = start.elapsed();
     println!("{}: {dur:?}", "Took".green());
     println!("");
+}
+
+fn stress_test_star(day: &dyn Day, input: String, is_second_star: bool) {
+    let mut total = std::time::Duration::ZERO;
+    const NUM: u32 = 1000;
+    for _ in 0..NUM {
+        total += time_star(day, input.clone(), is_second_star);
+    }
+    log!("Ran star {} in {:?}", is_second_star as usize, total / NUM);
+}
+
+fn time_star(day: &dyn Day, input: String, is_second_star: bool) -> std::time::Duration {
+    let start = std::time::Instant::now();
+    match is_second_star {
+        false => day.star1(input),
+        true => day.star2(input),
+    };
+    start.elapsed()
 }
