@@ -13,14 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2                # clones your repo
-
-      # Set Timezone to New York
-      - uses: zcong1993/setup-timezone@master
-        name: Set Timezone
-        with:
-          timezone: America/New_York
           
-      - uses: joblo2213/aoc-badges-action@v3
+      - uses: TristanStreich/aoc-badges-action@mastaer
         with:
           userid: 2455716                          # your user id, see setup on how to obtain
           session: ${{ secrets.AOC_SESSION }}    # secret containing session code, see setup on how to obtain
