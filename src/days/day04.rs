@@ -22,7 +22,7 @@ struct Card {
     //
     // TODO: try to build your own hashset for this use case. We know we always have two digit numbers
     // so the hashset could just be vec![false; 100];
-    winning_numbers: Vec<usize>,
+    winning_numbers: DigitSet,
 }
 
 impl FromStr for Card {
@@ -99,5 +99,41 @@ impl CardSheet {
                 .sum::<usize>();
         self.card_scores[card_num] = Some(score);
         return score;
+    }
+}
+
+
+
+struct DigitSet {
+    set: Vec<bool>
+}
+
+
+impl DigitSet {
+    /// TODO: don't do this and allow for a reallocation
+    fn new(num_digits: usize) -> Self {
+        let len = 10_usize.pow(num_digits as u32);
+        Self {
+            set: vec![false; len]
+        }
+    }
+
+    fn contains(&self, num: &usize) -> bool {
+        *self.set.get(*num).unwrap_or(&false)
+    }
+
+    // TODO: add return bool if newly inserted
+    fn insert(&mut self, num: usize) {
+        // TODO: reallocate
+        self.set.get_mut(num).map(|b| *b = true);
+    }
+}
+
+impl FromIterator<usize> for DigitSet {
+    fn from_iter<T: IntoIterator<Item = usize>>(iter: T) -> Self {
+        // TODO: don't force 2 digits
+        let mut set = DigitSet::new(2);
+        iter.into_iter().for_each(|num| set.insert(num));
+        set
     }
 }
