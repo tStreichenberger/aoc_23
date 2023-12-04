@@ -1,5 +1,4 @@
 use crate::prelude::*;
-use std::collections::HashSet;
 
 pub struct Day04;
 impl Day for Day04 {
@@ -17,7 +16,13 @@ impl Day for Day04 {
 
 struct Card {
     numbers: Vec<usize>,
-    winning_numbers: HashSet<usize>,
+    // I started with HashSet here for constant time lookup but it turns out vec is faster
+    // I guess since the vec is small the constant time factors on hashing are too big.
+    // interesting...
+    //
+    // TODO: try to build your own hashset for this use case. We know we always have two digit numbers
+    // so the hashset could just be vec![false; 100];
+    winning_numbers: Vec<usize>,
 }
 
 impl FromStr for Card {
