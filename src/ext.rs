@@ -14,7 +14,7 @@ pub trait StringExt {
     fn parsed_lines<T>(&self) -> ParsedIter<Lines<'_>, T>;
 }
 
-impl StringExt for String {
+impl StringExt for str {
     fn parsed_lines<T>(&self) -> ParsedIter<Lines<'_>, T> {
         self.lines().parse()
     }
