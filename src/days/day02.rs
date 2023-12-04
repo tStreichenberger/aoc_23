@@ -40,7 +40,7 @@ impl FromStr for Game {
 
         let id = game_header[5..].parse().unwrap();
 
-        let subsets = subsets.split("; ").parse().collect();
+        let subsets = subsets.split("; ").parse_each().collect();
 
         Ok(Self { id, subsets })
     }

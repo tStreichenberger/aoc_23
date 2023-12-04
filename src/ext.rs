@@ -16,7 +16,7 @@ pub trait StringExt {
 
 impl StringExt for str {
     fn parsed_lines<T>(&self) -> ParsedIter<Lines<'_>, T> {
-        self.lines().parse()
+        self.lines().parse_each()
     }
 }
 
@@ -30,7 +30,7 @@ pub trait IterExt: Iterator {
         self.map(f).sum()
     }
 
-    fn parse<T>(self) -> ParsedIter<Self, T>
+    fn parse_each<T>(self) -> ParsedIter<Self, T>
     where
         Self: Sized,
     {

@@ -25,8 +25,8 @@ impl FromStr for Card {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let (_, nums) = s.split_once(": ").unwrap();
         let (winning, numbers) = nums.split_once(" | ").unwrap();
-        let numbers = numbers.split_ascii_whitespace().parse().collect();
-        let winning_numbers = winning.split_ascii_whitespace().parse().collect();
+        let numbers = numbers.split_ascii_whitespace().parse_each().collect();
+        let winning_numbers = winning.split_ascii_whitespace().parse_each().collect();
         Ok(Self {
             winning_numbers,
             numbers,
