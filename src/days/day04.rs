@@ -20,9 +20,14 @@ struct Card {
     // I guess since the vec is small the constant time factors on hashing are too big.
     // interesting...
     //
-    // TODO: try to build your own hashset for this use case. We know we always have two digit numbers
+    // try to build your own hashset for this use case. We know we always have two digit numbers
     // so the hashset could just be vec![false; 100];
-    winning_numbers: Vec<usize>,
+    //
+    // Update: I wrote the DigitSet. It is about 30% faster than the vec for this use case
+    // 2x faster than the HashSet
+    winning_numbers: DigitSet,
+    // winning_numbers: std::collections::HashSet<usize>,
+    // winning_numbers: Vec<usize>,
 }
 
 impl FromStr for Card {
