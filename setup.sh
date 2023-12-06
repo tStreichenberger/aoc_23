@@ -22,7 +22,7 @@ if [ ! -f $INPUT_FILE_PATH ]; then
     # you can download this cli tool with `cargo install aoc-cli`
     aoc download --day $CURRENT_DAY --input-only --input-file ${INPUT_FILE_PATH}
 else
-    echo "Day ${CURRENT_DAY} already downlaoded. Skipping download"
+    echo "Day ${CURRENT_DAY} already downloaded. Skipping download"
 fi
 
 
