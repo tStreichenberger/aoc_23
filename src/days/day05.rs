@@ -1,8 +1,12 @@
 use crate::prelude::*;
 use std::{
-    cmp::Ordering,
     collections::HashMap,
     ops::Range,
+};
+
+use rayon::prelude::{
+    ParallelBridge,
+    ParallelIterator,
 };
 
 pub struct Day05;
@@ -19,51 +23,15 @@ impl Day for Day05 {
     }
 
     fn star2(&self, input: String) -> String {
-//         let input = "seeds: 79 14 55 13
-
-// seed-to-soil map:
-// 50 98 2
-// 52 50 48
-
-// soil-to-fertilizer map:
-// 0 15 37
-// 37 52 2
-// 39 0 15
-
-// fertilizer-to-water map:
-// 49 53 8
-// 0 11 42
-// 42 0 7
-// 57 7 4
-
-// water-to-light map:
-// 88 18 7
-// 18 25 70
-
-// light-to-temperature map:
-// 45 77 23
-// 81 45 19
-// 68 64 13
-
-// temperature-to-humidity map:
-// 0 69 1
-// 1 0 69
-
-// humidity-to-location map:
-// 60 56 37
-// 56 93 4
-// ";
         let almanac = Almanac::parse(&input);
         almanac
             .starting_seeds
             .iter()
-            .tuples()
-            .map(|(start, len)| (*start..*start + len))
-            .flat_map(|range| almanac.get_range_subsections(debug!(range)))
-            // .flat_map(|range| [debug!(&range).start, range.end - 1])
-            .map(|range| debug!(range).start)
-            .map(|seed| debug!(seed))
-            .map(|seed| debug!(almanac.get_seed_location(seed)))
+            .tuples::<(_, _)>()
+            // sometimes the right answer is to just throw more compute at the problem
+            .par_bridge()
+            .flat_map(|(start, len)| (*start..*start + len))
+            .map(|seed| almanac.get_seed_location(seed))
             .min()
             .unwrap()
             .to_string()
@@ -79,23 +47,21 @@ impl<'a> Almanac<'a> {
     fn get_seed_location(&self, seed: usize) -> usize {
         self.get_location_for("seed", seed)
     }
-
     fn get_location_for(&self, typ: &str, item: usize) -> usize {
         let map = self.maps.get(typ).unwrap();
         let converted = map.convert(item);
-        // debug!(converted);
         match map.to {
             "location" => converted,
             to => self.get_location_for(to, converted),
         }
     }
 
+    /*
+    For the smarter solution that I could not get to work
     fn get_range_permutations(&self, typ: &str, range: Range<usize>) -> Vec<Range<usize>> {
-        _ = debug!(&range);
         let map = self.maps.get(typ).unwrap();
         let ranges = map.ranges.iter().map(|conversion| &conversion.range);
         let perms = get_range_subsections(range.clone(), ranges);
-        _ = debug!(&perms);
         match map.to {
             "location" => perms,
             to => perms
@@ -113,6 +79,7 @@ impl<'a> Almanac<'a> {
     fn get_range_subsections(&self, range: Range<usize>) -> impl IntoIterator<Item = Range<usize>> {
         self.get_range_permutations("seed", range)
     }
+    */
 
     fn parse(s: &'a str) -> Self {
         let mut sections = s.split("\n\n");
@@ -131,8 +98,7 @@ impl<'a> Almanac<'a> {
         }
     }
 }
-
-fn get_range_subsections<'a>(
+/*fn get_range_subsections<'a>(
     range: Range<usize>,
     sub_ranges: impl Iterator<Item = &'a Range<usize>>,
 ) -> Vec<Range<usize>> {
@@ -201,12 +167,12 @@ enum Overlap {
     Left,
     Right,
 }
+*/
 
 struct Map<'a> {
     to: &'a str,
     ranges: Vec<Conversion>,
 }
-
 impl<'a> Map<'a> {
     fn convert(&self, num: usize) -> usize {
         self.ranges
@@ -217,20 +183,20 @@ impl<'a> Map<'a> {
     }
 
     /// this only works if you have already made this a continuous range. See [`get_range_subsections`]
-    fn convert_range(&self, range: Range<usize>) -> Range<usize> {
-        self.convert(range.start)..(self.convert(range.end-1)+1)
-    }
+    // fn convert_range(&self, range: Range<usize>) -> Range<usize> {
+    //     self.convert(range.start)..(self.convert(range.end-1)+1)
+    // }
 
-    fn devert(&self, num: usize) -> usize {
-        self.ranges.iter()
-            .find(|range| range.contains_dest(&num))
-            .map(|range| range.devert(num))
-            .unwrap_or(num)
-    }
+    // fn devert(&self, num: usize) -> usize {
+    //     self.ranges.iter()
+    //         .find(|range| range.contains_dest(&num))
+    //         .map(|range| range.devert(num))
+    //         .unwrap_or(num)
+    // }
 
-    fn devert_range(&self, range: Range<usize>) -> Range<usize> {
-        self.devert(range.start)..self.devert(range.end-1) + 1
-    }
+    // fn devert_range(&self, range: Range<usize>) -> Range<usize> {
+    //     self.devert(range.start)..self.devert(range.end-1) + 1
+    // }
 
     /// FromStr does not allow us to use lifetime of str
     /// Also want to return the from type here
@@ -255,9 +221,6 @@ impl<'a> Map<'a> {
 struct Conversion {
     range: Range<usize>,
     dest_start: usize,
-    // TODO: Test out not using a dyn function object and just storing dest and src directly
-    // curious about the performance implications of this
-    conversion: Box<dyn Fn(usize) -> usize>,
 }
 
 impl Conversion {
@@ -265,26 +228,26 @@ impl Conversion {
         self.range.contains(num)
     }
 
-    fn contains_dest(&self, num: &usize) -> bool {
-        let len = self.range.end - self.range.start;
-        (self.dest_start..self.dest_start+len).contains(num)
-    }
+    // fn contains_dest(&self, num: &usize) -> bool {
+    //     let len = self.range.end - self.range.start;
+    //     (self.dest_start..self.dest_start+len).contains(num)
+    // }
 
     fn convert(&self, num: usize) -> usize {
         num + self.dest_start - self.range.start
     }
 
-    fn convert_range(&self, range: Range<usize>) -> Range<usize> {
-        self.convert(range.start)..self.convert(range.end)
-    }
+    //     fn convert_range(&self, range: Range<usize>) -> Range<usize> {
+    //         self.convert(range.start)..self.convert(range.end)
+    //     }
 
-    fn devert(&self, num: usize) -> usize {
-        num + self.range.start - self.dest_start
-    }
+    //     fn devert(&self, num: usize) -> usize {
+    //         num + self.range.start - self.dest_start
+    //     }
 
-    fn devert_range(&self, range: Range<usize>) -> Range<usize> {
-        self.devert(range.start)..self.devert(range.end)
-    }
+    //     fn devert_range(&self, range: Range<usize>) -> Range<usize> {
+    //         self.devert(range.start)..self.devert(range.end)
+    //     }
 }
 
 impl FromStr for Conversion {
@@ -295,7 +258,6 @@ impl FromStr for Conversion {
         let src_start: usize = split.next().unwrap().parse().unwrap();
         let range_len: usize = split.next().unwrap().parse().unwrap();
         let range = src_start..src_start + range_len;
-        let conversion = Box::new(move |num| num + dest_start - src_start);
-        Ok(Self { range, conversion, dest_start })
+        Ok(Self { range, dest_start })
     }
 }

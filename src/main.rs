@@ -7,21 +7,21 @@ use std::{
 use clap::Parser;
 use colored::Colorize;
 
+mod collections;
 mod days;
 mod display;
 mod ext;
 mod logging;
-mod collections;
 
 use days::Day;
 use logging::log;
 
 mod prelude {
     pub use crate::{
+        collections::*,
         days::Day,
         ext::*,
         logging::*,
-        collections::*,
     };
     pub use itertools::Itertools;
     pub use lazy_static::lazy_static;
