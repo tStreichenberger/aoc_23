@@ -8,15 +8,13 @@ impl Day for Day10 {
         (input.parse::<PipeMaze>().unwrap().loop_length() / 2).to_string()
     }
 
-    // LMAOOO, there is something wrong with this solution but it got close. So I just guessed answers close and got it.
-    // It missed 2 of them. Wonder what the bug is...
     fn star2(&self, input: String) -> String {
         input
             .parse::<PipeMaze>()
             .unwrap()
             .set_entire_loop()
             .fill_in_inside()
-            .display()
+            // .display() // uncomment if you want to see a pretty picture
             .num_found
             .to_string()
     }
@@ -72,6 +70,11 @@ impl PipeMaze {
         self.loop_iter().count()
     }
 
+    /// Print out the map, coloring the type of pipes.
+    ///
+    /// For some reason this method takes 10ms in both release and debug mode
+    /// which is the majority of this days run time...
+    #[allow(unused)]
     fn display(&self) -> &Self {
         for (i, row) in self.data.iter().enumerate() {
             for (j, c) in row.iter().enumerate() {
