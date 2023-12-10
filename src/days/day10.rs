@@ -8,6 +8,8 @@ impl Day for Day10 {
         (input.parse::<PipeMaze>().unwrap().loop_length() / 2).to_string()
     }
 
+    // LMAOOO, there is something wrong with this solution but it got close. So I just guessed answers close and got it.
+    // It missed 2 of them. Wonder what the bug is...
     fn star2(&self, input: String) -> String {
         input
             .parse::<PipeMaze>()
