@@ -96,10 +96,17 @@ impl PipeMaze {
     }
 
     fn fill_in_inside(&mut self) -> &mut Self {
-        self.loop_iter().for_each(|(direction, index)| {
-            let inside_dir = direction.invert().right_dir();
+        self.loop_iter().for_each(|(came_from, index)| {
+            let inside_dir = came_from.invert().right_dir();
             let inside_index = inside_dir.go(index);
             self.bfs_set(inside_index);
+
+            let next_dir = directions(self.char_at(index))
+                .into_iter()
+                .filter(|dir| *dir != came_from)
+                .next()
+                .unwrap();
+            self.bfs_set(next_dir.right_dir().go(index))
         });
         self
     }
