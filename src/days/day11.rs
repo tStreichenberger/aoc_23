@@ -6,8 +6,29 @@ impl Day for Day11 {
         input
             .parse::<Galaxy>()
             .unwrap()
-            .expand(1)
-            .display()
+            .expand(2)
+            .stars()
+            .tuple_combinations()
+            .map(|(i1, i2)| dist(i1, i2))
+            .sum::<usize>()
+            .to_string()
+    }
+    fn star2(&self, input: String) -> String {
+//         let input = "...#......
+// .......#..
+// #.........
+// ..........
+// ......#...
+// .#........
+// .........#
+// ..........
+// .......#..
+// #...#.....";
+        input
+            .parse::<Galaxy>()
+            .unwrap()
+            .expand(1_000_000)
+            // .display()
             .stars()
             .tuple_combinations()
             .map(|(i1, i2)| dist(i1, i2))
@@ -35,7 +56,7 @@ impl Galaxy {
         let cols_to_expand = self
             .data
             .cols()
-            .map(|mut col| col.all(|c| *c == '.').then_some('_'))
+            .map(|mut col| col.all(|c| *c == '.').then_some('+'))
             .collect_vec();
 
         // expand cols
@@ -46,8 +67,8 @@ impl Galaxy {
                 .interleave(cols_to_expand.iter().cloned())
                 .flatten()
                 .flat_map(|c| {
-                    (c == '_')
-                        .then(|| vec!['_'; size])
+                    (c == '+')
+                        .then(|| vec!['+'; size - 1])
                         .unwrap_or_else(|| vec![c])
                 })
                 .collect()
@@ -58,8 +79,10 @@ impl Galaxy {
             .data
             .into_iter()
             .flat_map(|row| {
-                if row.iter().all(|c| *c == '.') {
-                    vec![row; size]
+                if row.iter().all(|c| *c != '#') {
+                    let mut x = vec![row.clone()];
+                    x.extend(vec![row.into_iter().map(|_| '+').collect_vec(); size - 1].into_iter());
+                    x
                 } else {
                     vec![row]
                 }
