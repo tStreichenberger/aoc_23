@@ -1,4 +1,8 @@
-use std::default::Default;
+use std::{
+    convert::Infallible,
+    default::Default,
+    str::FromStr,
+};
 
 pub struct DigitSet {
     set: Vec<bool>,
@@ -56,5 +60,98 @@ impl FromIterator<usize> for DigitSet {
 impl Default for DigitSet {
     fn default() -> Self {
         Self::new_with_size(2)
+    }
+}
+
+pub type Index = (usize, usize);
+
+pub struct Grid<T> {
+    data: Vec<Vec<T>>,
+}
+
+impl<T: From<char>> FromStr for Grid<T> {
+    type Err = Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(Self {
+            data: s
+                .lines()
+                .map(|line| line.chars().map(T::from).collect())
+                .collect(),
+        })
+    }
+}
+
+impl<T> std::ops::Index<Index> for Grid<T> {
+    type Output = T;
+    fn index(&self, index: Index) -> &Self::Output {
+        self.get(index).unwrap()
+    }
+}
+
+impl<T> Grid<T> {
+    pub fn get(&self, i: Index) -> Option<&T> {
+        self.data.get(i.0).map(|row| row.get(i.1)).flatten()
+    }
+
+    pub fn get_mut(&mut self, i: Index) -> Option<&mut T> {
+        self.data.get_mut(i.0).map(|row| row.get_mut(i.1)).flatten()
+    }
+
+    pub fn cols(&self) -> impl Iterator<Item = impl Iterator<Item = &T>> {
+        (0..self.data.len()).map(|i| self.data.iter().map(move |row| &row[i]))
+    }
+
+    pub fn rows(&self) -> impl Iterator<Item = &Vec<T>> + Clone {
+        self.data.iter()
+    }
+}
+
+impl<T> IntoIterator for Grid<T> {
+    type Item = Vec<T>;
+    type IntoIter = std::vec::IntoIter<Vec<T>>;
+    fn into_iter(self) -> Self::IntoIter {
+        self.data.into_iter()
+    }
+}
+
+impl<'g, T> IntoIterator for &'g Grid<T> {
+    type Item = &'g Vec<T>;
+    type IntoIter = std::slice::Iter<'g, Vec<T>>;
+    fn into_iter(self) -> Self::IntoIter {
+        self.data.iter()
+    }
+}
+
+impl<'g, T> IntoIterator for &'g mut Grid<T> {
+    type Item = &'g mut Vec<T>;
+    type IntoIter = std::slice::IterMut<'g, Vec<T>>;
+    fn into_iter(self) -> Self::IntoIter {
+        self.data.iter_mut()
+    }
+}
+
+impl<T> From<Vec<Vec<T>>> for Grid<T> {
+    fn from(value: Vec<Vec<T>>) -> Self {
+        Self { data: value }
+    }
+}
+
+impl<T> FromIterator<Vec<T>> for Grid<T> {
+    fn from_iter<I: IntoIterator<Item = Vec<T>>>(iter: I) -> Self {
+        Self {
+            data: iter.into_iter().collect(),
+        }
+    }
+}
+
+impl<T: std::fmt::Display> std::fmt::Display for Grid<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for row in self.rows() {
+            for i in row {
+                write!(f, "{i}").unwrap();
+            }
+            write!(f, "\n").unwrap();
+        }
+        Ok(())
     }
 }
