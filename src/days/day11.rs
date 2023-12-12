@@ -14,21 +14,30 @@ impl Day for Day11 {
             .to_string()
     }
     fn star2(&self, input: String) -> String {
-//         let input = "...#......
-// .......#..
-// #.........
-// ..........
-// ......#...
-// .#........
-// .........#
-// ..........
-// .......#..
-// #...#.....";
+        // this segfaults but I saw what I would need to do to solve it better and I just quickly did it in python :/
+        /*
+        >>> e2 = 9550717
+        >>> e3 = 10199167
+        >>> e4 = 10847617
+        >>> e4 - e3
+        648450
+        >>> e3 - e2
+        648450
+        >>> def size(x):
+        ...     return (x - 2) * 648450 + e2
+        ...
+        >>> size(3) == e3
+        True
+        >>> size(4) == e4
+        True
+        >>> size(1000000)
+        648458253817
+        >>>
+        */
         input
             .parse::<Galaxy>()
             .unwrap()
             .expand(1_000_000)
-            // .display()
             .stars()
             .tuple_combinations()
             .map(|(i1, i2)| dist(i1, i2))
@@ -80,9 +89,7 @@ impl Galaxy {
             .into_iter()
             .flat_map(|row| {
                 if row.iter().all(|c| *c != '#') {
-                    let mut x = vec![row.clone()];
-                    x.extend(vec![row.into_iter().map(|_| '+').collect_vec(); size - 1].into_iter());
-                    x
+                    vec![row.into_iter().map(|_| '.').collect_vec(); size]
                 } else {
                     vec![row]
                 }
@@ -105,6 +112,7 @@ impl Galaxy {
             .flatten()
     }
 
+    #[allow(unused)]
     fn display(&self) -> &Self {
         println!("{}", self.data);
         self
