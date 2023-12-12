@@ -4,6 +4,8 @@ use std::{
     str::FromStr,
 };
 
+use itertools::Itertools;
+
 pub struct DigitSet {
     set: Vec<bool>,
 }
@@ -101,8 +103,19 @@ impl<T> Grid<T> {
         (0..self.data.len()).map(|i| self.data.iter().map(move |row| &row[i]))
     }
 
+    pub fn cols_mut(&mut self) -> impl Iterator<Item = impl Iterator<Item = &mut T>> {
+        ColsMutIter {
+            grid: self,
+            col_num: 0,
+        }
+    }
+
     pub fn rows(&self) -> impl Iterator<Item = &Vec<T>> + Clone {
         self.data.iter()
+    }
+
+    pub fn rows_mut(&mut self) -> impl Iterator<Item = &mut Vec<T>> {
+        self.data.iter_mut()
     }
 }
 
@@ -146,12 +159,57 @@ impl<T> FromIterator<Vec<T>> for Grid<T> {
 
 impl<T: std::fmt::Display> std::fmt::Display for Grid<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        for row in self.rows() {
-            for i in row {
-                write!(f, "{i}").unwrap();
-            }
-            write!(f, "\n").unwrap();
-        }
-        Ok(())
+        let str_grid = self
+            .rows()
+            .map(|row| {
+                row.iter()
+                    .map(|i| i.to_string())
+                    .chain(std::iter::once_with(|| '\n'.to_string()))
+            })
+            .flatten()
+            .join("");
+        write!(f, "{str_grid}")
+    }
+}
+
+/// Iterate over the columns of a grid
+struct ColsMutIter<'g, T: 'g> {
+    grid: &'g mut Grid<T>,
+    col_num: usize,
+}
+
+impl<'g, T: 'g> Iterator for ColsMutIter<'g, T> {
+    type Item = ColMutIter<'g, T>;
+    fn next(&mut self) -> Option<Self::Item> {
+        self.grid
+            .data
+            .get(0)
+            .map(|row| row.get(self.col_num))
+            .flatten()
+            .map(|_| {
+                let iter = ColMutIter {
+                    grid: self.grid,
+                    col_num: self.col_num,
+                    row_num: 0,
+                };
+                self.col_num += 1;
+                iter
+            })
+    }
+}
+
+/// Iterate over a column
+struct ColMutIter<'g, T> {
+    grid: &'g mut Grid<T>,
+    col_num: usize,
+    row_num: usize,
+}
+
+impl<'g, T: 'g> Iterator for ColMutIter<'g, T> {
+    type Item = &'g mut T;
+    fn next(&mut self) -> Option<Self::Item> {
+        let item = self.grid.get_mut((self.row_num, self.col_num));
+        self.row_num += 1;
+        item
     }
 }
