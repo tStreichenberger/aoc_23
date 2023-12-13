@@ -90,11 +90,11 @@ impl<T> std::ops::Index<Index> for Grid<T> {
 
 impl<T> Grid<T> {
     pub fn get(&self, i: Index) -> Option<&T> {
-        self.data.get(i.0).map(|row| row.get(i.1)).flatten()
+        self.data.get(i.0).and_then(|row| row.get(i.1))
     }
 
     pub fn get_mut(&mut self, i: Index) -> Option<&mut T> {
-        self.data.get_mut(i.0).map(|row| row.get_mut(i.1)).flatten()
+        self.data.get_mut(i.0).and_then(|row| row.get_mut(i.1))
     }
 
     pub fn cols(&self) -> impl Iterator<Item = impl Iterator<Item = &T>> {
@@ -150,7 +150,7 @@ impl<T: std::fmt::Display> std::fmt::Display for Grid<T> {
             for i in row {
                 write!(f, "{i}").unwrap();
             }
-            write!(f, "\n").unwrap();
+            writeln!(f).unwrap();
         }
         Ok(())
     }
