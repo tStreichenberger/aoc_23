@@ -6,8 +6,9 @@ impl Day for Day06 {
         parse_races(&input)
             .into_iter()
             .map(|race| race.get_num_winning_times())
-            .fold(1, |product, num_wins| product * num_wins)
+            .product::<usize>()
             .to_string()
+
     }
 
     fn star2(&self, input: String) -> String {

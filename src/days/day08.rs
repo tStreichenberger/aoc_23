@@ -17,16 +17,16 @@ impl Day for Day08 {
         instruction
             .nodes
             .keys()
-            .filter(|k| k.ends_with("A"))
+            .filter(|k| k.ends_with('A'))
             .map(|node| {
                 instruction
                     .clone_with_starting_node(node)
-                    .find_position(|node| node.ends_with("Z"))
+                    .find_position(|node| node.ends_with('Z'))
                     .map(|(index, _)| index + 1)
                     .unwrap()
             })
             // 🙏 myscon
-            .fold(1, |lcm, len| num_integer::lcm(lcm, len))
+            .fold(1, num_integer::lcm)
             .to_string()
     }
 }

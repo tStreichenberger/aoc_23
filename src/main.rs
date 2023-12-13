@@ -101,7 +101,7 @@ fn run_star(day: &dyn Day, input: String, is_second_star: bool) {
     println!("{} {solution}", "Solution:".green());
     let dur = start.elapsed();
     println!("{}: {dur:?}", "Took".green());
-    println!("");
+    println!();
 }
 
 fn stress_test_star(day: &dyn Day, input: String, is_second_star: bool) {

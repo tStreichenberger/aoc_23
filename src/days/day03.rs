@@ -70,11 +70,11 @@ impl Engine {
         }
         let row = &self[i];
         let mut left_index = j;
-        while let Some(true) = row.get(left_index - 1).map(|c| c.is_digit(10)) {
+        while let Some(true) = row.get(left_index - 1).map(|c| c.is_ascii_digit()) {
             left_index -= 1
         }
         let mut right_index = j;
-        while let Some(true) = row.get(right_index + 1).map(|c| c.is_digit(10)) {
+        while let Some(true) = row.get(right_index + 1).map(|c| c.is_ascii_digit()) {
             right_index += 1
         }
 
@@ -95,7 +95,7 @@ impl Engine {
         let mut found_parts = Vec::new();
         for i in i - 1..=i + 1 {
             for j in j - 1..=j + 1 {
-                if let Some(true) = self.index(i).get(j).map(|c| c.is_digit(10)) {
+                if let Some(true) = self.index(i).get(j).map(|c| c.is_ascii_digit()) {
                     if let Some(part) = self.get_parts(i, j) {
                         found_parts.push(part)
                     }
@@ -107,7 +107,7 @@ impl Engine {
 
     fn has_symbol_at(&self, i: usize, j: usize) -> bool {
         let c = self[i][j];
-        !c.is_digit(10) && c != '.'
+        !c.is_ascii_digit() && c != '.'
     }
 
     fn gear_ratio(&mut self, i: usize, j: usize) -> usize {

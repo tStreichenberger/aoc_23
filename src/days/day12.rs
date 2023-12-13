@@ -40,13 +40,15 @@ impl Engine {
 }
 
 fn permutations(parts: impl Iterator<Item = Part> + Clone) -> impl Iterator<Item = impl Iterator<Item = Part>> {
-    for part in parts {
-        if let Part::Mystery = part {
-
-        } else {
-            
-        }
-    }
+    // for part in parts {
+    //     if let Part::Mystery = part {
+    //         todo!()
+    //     } else {
+    //         todo!()
+    //     }
+    // }
+    // todo!()
+    std::iter::once(std::iter::once(Part::Broken))
 }
 
 #[derive(PartialEq, Eq, Clone, Copy)]

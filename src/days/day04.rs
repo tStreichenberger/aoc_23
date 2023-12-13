@@ -103,6 +103,6 @@ impl CardSheet {
                 .map(|i| self.tally_scratch_card(i))
                 .sum::<usize>();
         self.card_scores[card_num] = Some(score);
-        return score;
+        score
     }
 }

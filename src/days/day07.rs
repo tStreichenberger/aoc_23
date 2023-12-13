@@ -33,8 +33,8 @@ struct Hand {
 impl FromStr for Hand {
     type Err = Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let (cards, bid) = s.split_once(" ").unwrap();
-        let cards = cards.chars().map(Card::from).collect();
+        let (cards, bid) = s.split_once(' ').unwrap();
+        let cards = cards.chars().map(Card::from).collect_vec();
         let bid = bid.parse().unwrap();
         let hand_type = Self::get_type(&cards);
         Ok(Self {
@@ -47,31 +47,31 @@ impl FromStr for Hand {
 
 impl PartialOrd for Hand {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        match self.hand_type.partial_cmp(&other.hand_type) {
-            Some(Ordering::Equal) => self
-                .cards
-                .iter()
-                .zip(other.cards.iter())
-                .map(|(card, other_card)| card.cmp(other_card))
-                .find(|ord| ord != &Ordering::Equal),
-            x => x,
-        }
+        Some(self.cmp(other))
     }
 }
 
 impl Ord for Hand {
     fn cmp(&self, other: &Self) -> Ordering {
-        self.partial_cmp(other).unwrap()
+        match self.hand_type.cmp(&other.hand_type) {
+            Ordering::Equal => self
+                .cards
+                .iter()
+                .zip(other.cards.iter())
+                .map(|(card, other_card)| card.cmp(other_card))
+                .find(|ord| ord != &Ordering::Equal)
+                .unwrap(),
+            x => x,
+        }
     }
 }
 
 impl Hand {
-    fn get_type(cards: &Vec<Card>) -> HandType {
+    fn get_type(cards: &[Card]) -> HandType {
         let mut num_cards = cards
             .iter()
             .counts_by(|card| card.strength)
-            .into_iter()
-            .map(|(_strength, count)| count)
+            .into_values()
             .sorted()
             .rev();
 
@@ -99,8 +99,7 @@ impl Hand {
             .iter()
             .filter(|card| card.strength != 1)
             .counts_by(|card| card.strength)
-            .into_iter()
-            .map(|(_strength, count)| count)
+            .into_values()
             .sorted()
             .rev();
 

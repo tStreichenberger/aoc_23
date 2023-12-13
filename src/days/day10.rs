@@ -88,7 +88,7 @@ impl PipeMaze {
                     print!("{c}")
                 }
             }
-            println!("");
+            println!();
         }
         self
     }
@@ -106,8 +106,7 @@ impl PipeMaze {
 
             let next_dir = directions(self.char_at(index))
                 .into_iter()
-                .filter(|dir| *dir != came_from)
-                .next()
+                .find(|dir| *dir != came_from)
                 .unwrap();
             self.bfs_set(next_dir.right_dir().go(index))
         });
@@ -131,8 +130,7 @@ impl PipeMaze {
         let char = self.char_at(index);
         let next_dir = directions(char)
             .into_iter()
-            .filter(|dir| *dir != prev_dir)
-            .next()
+            .find(|dir| *dir != prev_dir)
             .unwrap();
         let next_index = next_dir.go(index);
         (next_dir.invert(), next_index)

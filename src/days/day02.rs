@@ -85,7 +85,7 @@ impl FromStr for Subset {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut subset = Subset::empty();
         for handful in s.split(", ") {
-            let (num, color) = handful.split_once(" ").unwrap();
+            let (num, color) = handful.split_once(' ').unwrap();
             let num = num.parse().unwrap();
             match color {
                 "red" => subset.red = num,

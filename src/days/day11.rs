@@ -61,7 +61,7 @@ impl Galaxy {
         // expand cols
         (&mut self.data).into_iter().for_each(|row| {
             *row = row
-                .into_iter()
+                .iter_mut()
                 .map(|c| Some(*c))
                 .interleave(cols_to_expand.iter().cloned())
                 .flatten()
@@ -89,17 +89,12 @@ impl Galaxy {
         self
     }
 
-    fn stars<'a>(&'a self) -> impl 'a + Iterator<Item = Index> + Clone {
-        self.data
-            .rows()
-            .enumerate()
-            .map(|(i, row)| {
-                row.iter()
-                    .enumerate()
-                    .map(move |(j, c)| (*c == '#').then_some((i, j)))
-                    .flatten()
-            })
-            .flatten()
+    fn stars(&self) -> impl '_ + Iterator<Item = Index> + Clone {
+        self.data.rows().enumerate().flat_map(|(i, row)| {
+            row.iter()
+                .enumerate()
+                .flat_map(move |(j, c)| (*c == '#').then_some((i, j)))
+        })
     }
 
     #[allow(unused)]
