@@ -8,7 +8,6 @@ impl Day for Day06 {
             .map(|race| race.get_num_winning_times())
             .product::<usize>()
             .to_string()
-
     }
 
     fn star2(&self, input: String) -> String {
