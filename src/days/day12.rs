@@ -1,6 +1,8 @@
 use crate::prelude::*;
 use itertools::EitherOrBoth;
 
+use dyn_clone::DynClone;
+
 pub struct Day12;
 impl Day for Day12 {
     fn star1(&self, input: String) -> String {
@@ -114,6 +116,32 @@ fn permutations(mut parts: impl Iterator<Item = Part>) -> Vec<Vec<Part>> {
                 .map(move |parts| std::iter::once(part).chain(parts.iter().copied()).collect())
         })
         .collect()
+}
+
+trait CloneIter<T>: Iterator<Item=T> + DynClone {
+}
+
+impl<I,T> CloneIter<T> for I
+where I: Iterator<Item=T> + DynClone + Clone {}
+
+fn permutations_iter(mut parts: impl Iterator<Item = Part>) -> Option<Box<dyn CloneIter<Vec<Part>>>> {
+    let part = parts.next()?;
+
+    let next_part_options = permutations_iter(parts);
+    let this_part = if let Part::Mystery = part {
+        vec![Part::Broken, Part::Fixed]
+    } else {
+        vec![part]
+    };
+    match next_part_options {
+        None => Some(Box::new(this_part.into_iter().map(|part| vec![part]))),
+        Some(next_part_options) => Some(Box::new(this_part
+            .into_iter()
+            .flat_map(move |part| {
+                dyn_clone::clone_box(&next_part_options)
+                    .map(move |parts| std::iter::once(part).chain(parts.iter().copied()).collect())
+            })))
+    }
 }
 
 fn print_parts(parts: &[Part]) {
