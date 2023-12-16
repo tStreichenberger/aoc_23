@@ -21,4 +21,5 @@
 | [Day 10](https://adventofcode.com/2023/day/10) | ⭐ | ⭐ |
 | [Day 11](https://adventofcode.com/2023/day/11) | ⭐ | ⭐ |
 | [Day 12](https://adventofcode.com/2023/day/12) | ⭐ |   |
+| [Day 13](https://adventofcode.com/2023/day/13) | ⭐ |   |
 <!--- advent_readme_stars table --->
