@@ -116,6 +116,7 @@ fn permutations(mut parts: impl Iterator<Item = Part>) -> Vec<Vec<Part>> {
         .collect()
 }
 
+#[allow(unused)]
 fn print_parts(parts: &[Part]) {
     for part in parts {
         print!(

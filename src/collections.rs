@@ -97,11 +97,16 @@ impl<T> Grid<T> {
         self.data.get_mut(i.0).and_then(|row| row.get_mut(i.1))
     }
 
-    pub fn cols(&self) -> impl Iterator<Item = impl Iterator<Item = &T>> {
-        (0..self.data.len()).map(|i| self.data.iter().map(move |row| &row[i]))
+    pub fn cols(
+        &self,
+    ) -> impl Iterator<Item = impl Iterator<Item = &T> + Clone>
+           + std::iter::DoubleEndedIterator
+           + Clone
+           + std::iter::ExactSizeIterator {
+        (0..self.data[0].len()).map(|i| self.data.iter().map(move |row| &row[i]))
     }
 
-    pub fn rows(&self) -> impl Iterator<Item = &Vec<T>> + Clone {
+    pub fn rows(&self) -> std::slice::Iter<'_, Vec<T>> {
         self.data.iter()
     }
 }
