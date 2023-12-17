@@ -106,6 +106,13 @@ impl<T> Grid<T> {
         (0..self.data[0].len()).map(|i| self.data.iter().map(move |row| &row[i]))
     }
 
+    pub fn set_col(&mut self, index: usize, new_vals: impl Iterator<Item = T>) {
+        self.data
+            .iter_mut()
+            .zip(new_vals)
+            .for_each(|(mut_row, col_val)| mut_row[index] = col_val)
+    }
+
     pub fn rows(&self) -> std::slice::Iter<'_, Vec<T>> {
         self.data.iter()
     }
