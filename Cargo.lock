@@ -81,6 +81,7 @@ dependencies = [
  "chrono",
  "clap",
  "colored",
+ "index_list",
  "itertools",
  "lazy_static",
  "log",
@@ -283,6 +284,12 @@ checksum = "f31827a206f56af32e590ba56d5d2d085f558508192593743f16b2306495269f"
 dependencies = [
  "cc",
 ]
+
+[[package]]
+name = "index_list"
+version = "0.2.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "70891286cb8e844fdfcf1178b47569699f9e20b5ecc4b45a6240a64771444638"
 
 [[package]]
 name = "is-terminal"
