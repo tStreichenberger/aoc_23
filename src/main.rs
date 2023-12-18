@@ -12,6 +12,7 @@ mod days;
 mod display;
 mod ext;
 mod logging;
+mod utils;
 
 use days::Day;
 use logging::log;
@@ -22,6 +23,7 @@ mod prelude {
         days::Day,
         ext::*,
         logging::*,
+        utils::*,
     };
     pub use itertools::Itertools;
     pub use lazy_static::lazy_static;

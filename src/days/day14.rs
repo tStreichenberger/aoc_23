@@ -112,13 +112,6 @@ impl FromStr for Lens {
     }
 }
 
-enum Direction {
-    North,
-    South,
-    East,
-    West,
-}
-
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Hash)]
 enum LensPiece {
     RoundRock,

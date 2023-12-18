@@ -98,6 +98,14 @@ impl<T> Grid<T> {
         self.data.get_mut(i.0).and_then(|row| row.get_mut(i.1))
     }
 
+    pub fn num_rows(&self) -> usize {
+        self.data.len()
+    }
+
+    pub fn num_cols(&self) -> usize {
+        self.data.get(0).map_or(0, |row| row.len())
+    }
+
     pub fn cols(
         &self,
     ) -> impl Iterator<Item = impl Iterator<Item = &T> + Clone + std::iter::DoubleEndedIterator>
