@@ -65,6 +65,7 @@ impl Default for DigitSet {
 
 pub type Index = (usize, usize);
 
+#[derive(Hash, Clone, PartialEq, Eq)]
 pub struct Grid<T> {
     data: Vec<Vec<T>>,
 }
@@ -99,7 +100,7 @@ impl<T> Grid<T> {
 
     pub fn cols(
         &self,
-    ) -> impl Iterator<Item = impl Iterator<Item = &T> + Clone>
+    ) -> impl Iterator<Item = impl Iterator<Item = &T> + Clone + std::iter::DoubleEndedIterator>
            + std::iter::DoubleEndedIterator
            + Clone
            + std::iter::ExactSizeIterator {
@@ -115,6 +116,10 @@ impl<T> Grid<T> {
 
     pub fn rows(&self) -> std::slice::Iter<'_, Vec<T>> {
         self.data.iter()
+    }
+
+    pub fn set_row(&mut self, index: usize, new_vals: impl Iterator<Item = T>) {
+        self.data[index] = new_vals.collect()
     }
 }
 

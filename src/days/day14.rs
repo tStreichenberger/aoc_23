@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use std::collections::HashMap;
 
 pub struct Day14;
 impl Day for Day14 {
@@ -6,34 +7,77 @@ impl Day for Day14 {
         input
             .parse::<Lens>()
             .unwrap()
-            .roll_north()
+            .roll(Direction::North)
             .load()
             .to_string()
+    }
+
+    fn star2(&self, input: String) -> String {
+        let mut lens: Lens = input.parse().unwrap();
+
+        lens.cache();
+
+        while lens.cycle_num < 1_000_000_000 {
+            if let Some(start_of_cycle) = lens.cycle().cache() {
+                let cycle_len = lens.cycle_num - start_of_cycle;
+                let remaining_cycles = 1_000_000_000 - lens.cycle_num;
+                let remainder = remaining_cycles % cycle_len;
+                for _ in 0..remainder {
+                    lens.cycle();
+                }
+                break;
+            }
+        }
+
+        lens.load().to_string()
     }
 }
 
 struct Lens {
     grid: Grid<LensPiece>,
+    cache: HashMap<Grid<LensPiece>, usize>,
+    cycle_num: usize,
 }
 
 impl Lens {
-    fn roll_north(&mut self) -> &mut Self {
-        let new_cols = self
-            .grid
-            .cols()
-            .map(|col| {
-                col.group_by(|piece| matches!(piece, LensPiece::SquareRock))
-                    .into_iter()
-                    .flat_map(|(_, i)| i.sorted().copied())
-                    .collect_vec()
-            })
-            .collect_vec();
+    fn cycle(&mut self) -> &mut Self {
+        self.cycle_num += 1;
+        self.roll(Direction::North)
+            .roll(Direction::West)
+            .roll(Direction::South)
+            .roll(Direction::East)
+    }
 
-        for (i, new_col) in new_cols.into_iter().enumerate() {
-            self.grid.set_col(i, new_col.into_iter())
+    fn roll(&mut self, dir: Direction) -> &mut Self {
+        let new_axis = match dir {
+            Direction::North => Self::roll_on_axis(self.grid.cols()),
+            Direction::East => Self::roll_on_axis(self.grid.rows().map(|row| row.iter().rev())),
+            Direction::South => Self::roll_on_axis(self.grid.cols().map(|col| col.rev())),
+            Direction::West => Self::roll_on_axis(self.grid.rows().map(|vec| vec.iter())),
+        };
+
+        for (i, ax) in new_axis.into_iter().enumerate() {
+            match dir {
+                Direction::North => self.grid.set_col(i, ax.into_iter()),
+                Direction::East => self.grid.set_row(i, ax.into_iter().rev()),
+                Direction::South => self.grid.set_col(i, ax.into_iter().rev()),
+                Direction::West => self.grid.set_row(i, ax.into_iter()),
+            }
         }
 
         self
+    }
+
+    fn roll_on_axis<'a>(
+        axis: impl Iterator<Item = impl Iterator<Item = &'a LensPiece>>,
+    ) -> Vec<Vec<LensPiece>> {
+        axis.map(|ax| {
+            ax.group_by(|piece| matches!(piece, LensPiece::SquareRock))
+                .into_iter()
+                .flat_map(|(_, i)| i.sorted().copied())
+                .collect()
+        })
+        .collect()
     }
 
     fn load(&self) -> usize {
@@ -44,12 +88,27 @@ impl Lens {
                 * (i + 1)
         })
     }
+
+    /// cache the current grid state and cycle num. If the grid appeared in the cache then return the cycle num for it
+    fn cache(&mut self) -> Option<usize> {
+        self.cache.insert(self.grid.clone(), self.cycle_num)
+    }
+}
+
+impl std::fmt::Display for Lens {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.grid)
+    }
 }
 
 impl FromStr for Lens {
     type Err = Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self { grid: s.parse()? })
+        Ok(Self {
+            grid: s.parse()?,
+            cache: HashMap::new(),
+            cycle_num: 0,
+        })
     }
 }
 
@@ -60,7 +119,7 @@ enum Direction {
     West,
 }
 
-#[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Hash)]
 enum LensPiece {
     RoundRock,
     SquareRock,

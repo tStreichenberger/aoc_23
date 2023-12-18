@@ -1,7 +1,10 @@
 //! Adding Extension methods
 
 use std::{
-    fmt::Debug,
+    fmt::{
+        Debug,
+        Display,
+    },
     iter::Sum,
     marker::PhantomData,
     str::{
@@ -52,5 +55,16 @@ where
     type Item = T;
     fn next(&mut self) -> Option<Self::Item> {
         self.0.next().map(|line| line.as_ref().parse().unwrap())
+    }
+}
+
+pub trait DisplayMethod {
+    fn display(self) -> Self;
+}
+
+impl<T: Display> DisplayMethod for T {
+    fn display(self) -> Self {
+        println!("{self}");
+        self
     }
 }
