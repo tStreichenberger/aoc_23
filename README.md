@@ -1,8 +1,8 @@
 ![](https://raw.githubusercontent.com/orfeasa/advent-of-code-2023/master/header.png)
 
 ![](https://img.shields.io/badge/day%20📅-18-blue)
-![](https://img.shields.io/badge/stars%20⭐-28-yellow)
-![](https://img.shields.io/badge/days%20completed-13-red)
+![](https://img.shields.io/badge/stars%20⭐-29-yellow)
+![](https://img.shields.io/badge/days%20completed-14-red)
 
 <!--- advent_readme_stars table --->
 ## 2023 Results
@@ -23,5 +23,5 @@
 | [Day 12](https://adventofcode.com/2023/day/12) | ⭐ |   |
 | [Day 13](https://adventofcode.com/2023/day/13) | ⭐ | ⭐ |
 | [Day 14](https://adventofcode.com/2023/day/14) | ⭐ | ⭐ |
-| [Day 15](https://adventofcode.com/2023/day/15) | ⭐ |   |
+| [Day 15](https://adventofcode.com/2023/day/15) | ⭐ | ⭐ |
 <!--- advent_readme_stars table --->
