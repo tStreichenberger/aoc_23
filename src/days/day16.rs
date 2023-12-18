@@ -13,13 +13,13 @@ impl Day for Day16 {
 
     fn star2(&self, input: String) -> String {
         let maze: MirrorMaze = input.parse().unwrap();
-        // from top
-        (0..maze.grid.num_cols())
-            .map(|j| {
+        std::iter::empty()
+            // from top
+            .chain((0..maze.grid.num_cols()).map(|j| {
                 maze.clone()
                     .traverse((0, j), Direction::North)
                     .num_energized()
-            })
+            }))
             // from bottom
             .chain((0..maze.grid.num_cols()).map(|j| {
                 maze.clone()
