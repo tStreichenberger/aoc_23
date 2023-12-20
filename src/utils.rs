@@ -31,6 +31,17 @@ impl Direction {
         )
     }
 
+    pub fn sgo(&self, index: SIndex) -> SIndex {
+        use Direction::*;
+        let diff = match self {
+            North => (-1, 0),
+            South => (1, 0),
+            West => (0, -1),
+            East => (0, 1),
+        };
+        ((index.0 + diff.0), (index.1 + diff.1))
+    }
+
     pub fn right_dir(&self) -> Self {
         use Direction::*;
         match self {
@@ -51,3 +62,17 @@ impl Direction {
         }
     }
 }
+
+impl From<char> for Direction {
+    fn from(c: char) -> Self {
+        match c {
+            'U' => Direction::North,
+            'L' => Direction::West,
+            'R' => Direction::East,
+            'D' => Direction::South,
+            _ => panic!("Invalid direction char: {c}"),
+        }
+    }
+}
+
+pub type SIndex = (i64, i64);

@@ -89,7 +89,17 @@ impl<T> std::ops::Index<Index> for Grid<T> {
     }
 }
 
+impl<T> std::default::Default for Grid<T> {
+    fn default() -> Self {
+        Self { data: Vec::new() }
+    }
+}
+
 impl<T> Grid<T> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
     pub fn get(&self, i: Index) -> Option<&T> {
         self.data.get(i.0).and_then(|row| row.get(i.1))
     }
@@ -128,6 +138,30 @@ impl<T> Grid<T> {
 
     pub fn set_row(&mut self, index: usize, new_vals: impl Iterator<Item = T>) {
         self.data[index] = new_vals.collect()
+    }
+}
+
+impl<T: Default> Grid<T> {
+    /// only grows the grid. Smaller sizes have no effect
+    pub fn resize(&mut self, num_rows: usize, num_cols: usize) {
+        if num_cols > self.num_cols() {
+            self.add_cols(num_cols - self.num_cols())
+        }
+
+        if num_rows > self.num_rows() {
+            self.add_rows(num_rows - self.num_rows())
+        }
+    }
+
+    pub fn add_cols(&mut self, cols: usize) {
+        self.into_iter()
+            .for_each(|row| row.extend((0..cols).map(|_| T::default())))
+    }
+
+    pub fn add_rows(&mut self, rows: usize) {
+        let num_cols = self.num_cols();
+        self.data
+            .extend((0..rows).map(|_| (0..num_cols).map(|_| T::default()).collect()))
     }
 }
 

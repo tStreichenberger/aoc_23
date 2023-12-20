@@ -15,17 +15,16 @@ pub mod day14;
 pub mod day15;
 pub mod day16;
 pub mod day17;
-
-pub const UNIMPLEMENTED_SOLUTION: &str = "Unimplemented";
+pub mod day18;
 
 pub trait Day {
     #[allow(unused)]
     fn star1(&self, input: String) -> String {
-        UNIMPLEMENTED_SOLUTION.into()
+        "Unimplemented".into()
     }
 
     #[allow(unused)]
     fn star2(&self, input: String) -> String {
-        UNIMPLEMENTED_SOLUTION.into()
+        "Unimplemented".into()
     }
 }
