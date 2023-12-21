@@ -1,7 +1,7 @@
 ![](https://raw.githubusercontent.com/orfeasa/advent-of-code-2023/master/header.png)
 
 ![](https://img.shields.io/badge/day%20📅-20-blue)
-![](https://img.shields.io/badge/stars%20⭐-35-yellow)
+![](https://img.shields.io/badge/stars%20⭐-36-yellow)
 ![](https://img.shields.io/badge/days%20completed-17-red)
 
 <!--- advent_readme_stars table --->
