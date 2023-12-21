@@ -27,4 +27,5 @@
 | [Day 16](https://adventofcode.com/2023/day/16) | ⭐ | ⭐ |
 | [Day 17](https://adventofcode.com/2023/day/17) | ⭐ | ⭐ |
 | [Day 18](https://adventofcode.com/2023/day/18) | ⭐ | ⭐ |
+| [Day 19](https://adventofcode.com/2023/day/19) | ⭐ |   |
 <!--- advent_readme_stars table --->
