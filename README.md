@@ -1,6 +1,6 @@
 ![](https://raw.githubusercontent.com/orfeasa/advent-of-code-2023/master/header.png)
 
-![](https://img.shields.io/badge/day%20📅-24-blue)
+![](https://img.shields.io/badge/day%20📅-25-blue)
 ![](https://img.shields.io/badge/stars%20⭐-36-yellow)
 ![](https://img.shields.io/badge/days%20completed-17-red)
 
